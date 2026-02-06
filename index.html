@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>CPS Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 { font-size: 32px; }
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+      border: none;
+    }
+    #clickArea {
+      background: #0a84ff;
+      margin-top: 30px;
+    }
+    #donate {
+      background: #22c55e;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🔥 CPS Test</h1>
+<p>Click as fast as you can!</p>
+
+<div>
+  <button onclick="startTest(5)">5 sec</button>
+  <button onclick="startTest(10)">10 sec</button>
+  <button onclick="startTest(30)">30 sec</button>
+  <button onclick="startTest(60)">60 sec</button>
+</div>
+
+<button id="clickArea" onclick="clickCount++" disabled>
+  CLICK HERE
+</button>
+
+<p id="info"></p>
+
+<a href="https://telegra.ph/Podderzhat-proekt-02-06" target="_blank">
+  <button id="donate">💙 Support Project</button>
+</a>
+
+<script>
+let time = 0;
+let clickCount = 0;
+let timer;
+
+function startTest(seconds) {
+  time = seconds;
+  clickCount = 0;
+  document.getElementById("info").innerText = "Time: " + time;
+  document.getElementById("clickArea").disabled = false;
+
+  timer = setInterval(() => {
+    time--;
+    document.getElementById("info").innerText = "Time: " + time;
+    if (time <= 0) {
+      clearInterval(timer);
+      document.getElementById("clickArea").disabled = true;
+      let cps = (clickCount / seconds).toFixed(2);
+      document.getElementById("info").innerText =
+        "Result: " + cps + " CPS (" + clickCount + " clicks)";
+    }
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
