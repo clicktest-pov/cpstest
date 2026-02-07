@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>CPS Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
@@ -34,6 +34,10 @@
       background: #444;
       cursor: not-allowed;
     }
+    #record {
+      margin-top: 10px;
+      font-weight: bold;
+    }
     #donate {
       margin-top: 25px;
       background: #22c55e;
@@ -64,6 +68,7 @@
 </div>
 
 <p id="info">Choose a mode to start</p>
+<p id="record">Best: 0 CPS</p>
 
 <a id="donate" href="https://www.donationalerts.com/r/cpstest" target="_blank">
   💙 Support the project
@@ -74,6 +79,9 @@ let clicks = 0;
 let timeLeft = 0;
 let interval = null;
 let active = false;
+
+let best = localStorage.getItem("bestCPS") || 0;
+document.getElementById("record").innerText = "Best: " + best + " CPS";
 
 function startTest(seconds) {
   clicks = 0;
@@ -99,9 +107,18 @@ function endTest(seconds) {
   clearInterval(interval);
   active = false;
   document.getElementById("clickArea").classList.add("disabled");
+
   const cps = (clicks / seconds).toFixed(2);
   document.getElementById("info").innerText =
     `Result: ${cps} CPS (${clicks} clicks)`;
+
+  if (cps > best) {
+    best = cps;
+    localStorage.setItem("bestCPS", best);
+    const recordEl = document.getElementById("record");
+    recordEl.innerText = "🏆 New Record: " + best + " CPS";
+    recordEl.style.color = "#22c55e";
+  }
 }
 </script>
 
