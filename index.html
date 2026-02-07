@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>CPS Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
@@ -75,51 +75,57 @@
 </a>
 
 <script>
-let clicks = 0;
-let timeLeft = 0;
-let interval = null;
-let active = false;
+document.addEventListener("DOMContentLoaded", () => {
 
-let best = localStorage.getItem("bestCPS") || 0;
-document.getElementById("record").innerText = "Best: " + best + " CPS";
+  let clicks = 0;
+  let timeLeft = 0;
+  let interval = null;
+  let active = false;
 
-function startTest(seconds) {
-  clicks = 0;
-  timeLeft = seconds;
-  active = true;
-  document.getElementById("info").innerText = `Time: ${timeLeft}s`;
-  document.getElementById("clickArea").classList.remove("disabled");
+  let best = localStorage.getItem("bestCPS");
+  if (!best) best = 0;
 
-  clearInterval(interval);
-  interval = setInterval(() => {
-    timeLeft--;
+  const recordEl = document.getElementById("record");
+  recordEl.innerText = "Best: " + best + " CPS";
+
+  window.startTest = function(seconds) {
+    clicks = 0;
+    timeLeft = seconds;
+    active = true;
     document.getElementById("info").innerText = `Time: ${timeLeft}s`;
-    if (timeLeft <= 0) endTest(seconds);
-  }, 1000);
-}
+    document.getElementById("clickArea").classList.remove("disabled");
 
-function registerClick() {
-  if (!active) return;
-  clicks++;
-}
+    clearInterval(interval);
+    interval = setInterval(() => {
+      timeLeft--;
+      document.getElementById("info").innerText = `Time: ${timeLeft}s`;
+      if (timeLeft <= 0) endTest(seconds);
+    }, 1000);
+  };
 
-function endTest(seconds) {
-  clearInterval(interval);
-  active = false;
-  document.getElementById("clickArea").classList.add("disabled");
+  window.registerClick = function() {
+    if (!active) return;
+    clicks++;
+  };
 
-  const cps = (clicks / seconds).toFixed(2);
-  document.getElementById("info").innerText =
-    `Result: ${cps} CPS (${clicks} clicks)`;
+  function endTest(seconds) {
+    clearInterval(interval);
+    active = false;
+    document.getElementById("clickArea").classList.add("disabled");
 
-  if (cps > best) {
-    best = cps;
-    localStorage.setItem("bestCPS", best);
-    const recordEl = document.getElementById("record");
-    recordEl.innerText = "🏆 New Record: " + best + " CPS";
-    recordEl.style.color = "#22c55e";
+    const cps = (clicks / seconds).toFixed(2);
+    document.getElementById("info").innerText =
+      `Result: ${cps} CPS (${clicks} clicks)`;
+
+    if (cps > best) {
+      best = cps;
+      localStorage.setItem("bestCPS", best);
+      recordEl.innerText = "🏆 New Record: " + best + " CPS";
+      recordEl.style.color = "#22c55e";
+    }
   }
-}
+
+});
 </script>
 
 </body>
