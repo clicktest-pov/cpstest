@@ -80,14 +80,22 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  let isPremium = localStorage.getItem("premium") === "true";
+  if (isPremium) {
+    document.body.style.border = "4px solid gold";
+  }
+
+  window.activatePremium = function () {
+    localStorage.setItem("premium", "true");
+    location.reload();
+  };
 
   let clicks = 0;
   let timeLeft = 0;
   let interval = null;
   let active = false;
 
-  let best = localStorage.getItem("bestCPS");
-  if (!best) best = 0;
+  let best = Number(localStorage.getItem("bestCPS")) || 0;
 
   const recordEl = document.getElementById("record");
   recordEl.innerText = "Best: " + best + " CPS";
@@ -134,3 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+let isPremium = localStorage.getItem("premium") === "true";
+if (isPremium) {
+  document.body.style.border = "4px solid gold";
+}
