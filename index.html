@@ -1,79 +1,107 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>CPS Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      background: #0f0f0f;
+      color: #ffffff;
       text-align: center;
       padding: 30px;
     }
     h1 { font-size: 32px; }
-    button {
-      font-size: 20px;
-      padding: 15px 30px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 10px;
+    .modes button {
+      margin: 5px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
       border: none;
+      cursor: pointer;
     }
     #clickArea {
-      background: #0a84ff;
       margin-top: 30px;
+      padding: 40px;
+      font-size: 24px;
+      background: #2563eb;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #clickArea.disabled {
+      background: #444;
+      cursor: not-allowed;
     }
     #donate {
+      margin-top: 25px;
       background: #22c55e;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      display: inline-block;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
 <h1>🔥 CPS Test</h1>
-<p>Click as fast as you can!</p>
+<p>Click as fast as you can</p>
 
-<div>
+<div class="modes">
+  <button onclick="startTest(1)">1 sec</button>
   <button onclick="startTest(5)">5 sec</button>
   <button onclick="startTest(10)">10 sec</button>
   <button onclick="startTest(30)">30 sec</button>
   <button onclick="startTest(60)">60 sec</button>
 </div>
 
-<button id="clickArea" onclick="clickCount++" disabled>
+<div id="clickArea" class="disabled" onclick="registerClick()">
   CLICK HERE
-</button>
+</div>
 
-<p id="info"></p>
+<p id="info">Choose a mode to start</p>
 
-<a href="https://telegra.ph/Podderzhat-proekt-02-06" target="_blank">
-  <button id="donate">💙 Support Project</button>
+<a id="donate" href="https://www.donationalerts.com/r/cpstest" target="_blank">
+  💙 Support the project
 </a>
 
 <script>
-let time = 0;
-let clickCount = 0;
-let timer;
+let clicks = 0;
+let timeLeft = 0;
+let interval = null;
+let active = false;
 
 function startTest(seconds) {
-  time = seconds;
-  clickCount = 0;
-  document.getElementById("info").innerText = "Time: " + time;
-  document.getElementById("clickArea").disabled = false;
+  clicks = 0;
+  timeLeft = seconds;
+  active = true;
+  document.getElementById("info").innerText = `Time: ${timeLeft}s`;
+  document.getElementById("clickArea").classList.remove("disabled");
 
-  timer = setInterval(() => {
-    time--;
-    document.getElementById("info").innerText = "Time: " + time;
-    if (time <= 0) {
-      clearInterval(timer);
-      document.getElementById("clickArea").disabled = true;
-      let cps = (clickCount / seconds).toFixed(2);
-      document.getElementById("info").innerText =
-        "Result: " + cps + " CPS (" + clickCount + " clicks)";
-    }
+  clearInterval(interval);
+  interval = setInterval(() => {
+    timeLeft--;
+    document.getElementById("info").innerText = `Time: ${timeLeft}s`;
+    if (timeLeft <= 0) endTest(seconds);
   }, 1000);
+}
+
+function registerClick() {
+  if (!active) return;
+  clicks++;
+}
+
+function endTest(seconds) {
+  clearInterval(interval);
+  active = false;
+  document.getElementById("clickArea").classList.add("disabled");
+  const cps = (clicks / seconds).toFixed(2);
+  document.getElementById("info").innerText =
+    `Result: ${cps} CPS (${clicks} clicks)`;
 }
 </script>
 
