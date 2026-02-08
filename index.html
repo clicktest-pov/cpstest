@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>CPS Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,75 +13,105 @@
       text-align: center;
       padding: 30px;
     }
-    h1 { font-size: 32px; }
+
+    h1 {
+      font-size: 32px;
+    }
+
     .modes button {
-      margin: 5px;
+      margin: 6px;
       padding: 12px 20px;
       font-size: 16px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
     }
+
     #clickArea {
-      margin-top: 30px;
+      margin: 30px auto;
       padding: 40px;
       font-size: 24px;
-      background: #2563eb;
+      background: #333;
       border-radius: 12px;
-      cursor: pointer;
       user-select: none;
     }
+
     #clickArea.disabled {
-      background: #444;
-      cursor: not-allowed;
+      opacity: 0.5;
+      pointer-events: none;
     }
+
+    #info {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
     #record {
       margin-top: 10px;
+      font-size: 20px;
       font-weight: bold;
     }
-    #donate {
+
+    .actions {
       margin-top: 25px;
-      background: #22c55e;
-      padding: 12px 20px;
-      border-radius: 8px;
-      color: #000;
-      font-weight: bold;
+    }
+
+    .actions a {
       display: inline-block;
+      margin: 10px;
+      padding: 12px 18px;
+      border-radius: 10px;
       text-decoration: none;
+      font-weight: bold;
+    }
+
+    #donate {
+      background: #22c55e;
+      color: #000;
+    }
+
+    #premiumBtn {
+      background: #7c3aed;
+      color: #fff;
     }
   </style>
 </head>
+
 <body>
 
-<h1>🔥 CPS Test</h1>
-<p>Click as fast as you can</p>
+  <h1>🔥 CPS Test</h1>
+  <p>Click as fast as you can</p>
 
-<div class="modes">
-  <button onclick="startTest(1)">1 sec</button>
-  <button onclick="startTest(5)">5 sec</button>
-  <button onclick="startTest(10)">10 sec</button>
-  <button onclick="startTest(30)">30 sec</button>
-  <button onclick="startTest(60)">60 sec</button>
-</div>
+  <div class="modes">
+    <button onclick="startTest(1)">1 sec</button>
+    <button onclick="startTest(5)">5 sec</button>
+    <button onclick="startTest(10)">10 sec</button>
+    <button onclick="startTest(30)">30 sec</button>
+    <button onclick="startTest(60)">60 sec</button>
+  </div>
 
-<div id="clickArea" class="disabled" onclick="registerClick()">
-  CLICK HERE
-</div>
+  <div id="clickArea" class="disabled" onclick="registerClick()">
+    CLICK HERE
+  </div>
 
-<p id="info">Choose a mode to start</p>
-<p id="record">Best: 0 CPS</p>
+  <p id="info">Choose a mode to start</p>
+  <p id="record">Best: 0 CPS</p>
 
-<a id="donate" href="https://www.donationalerts.com/r/cpstest" target="_blank">
-  💙 Support the project
-</a>
+  <div class="actions">
+    <a id="donate" href="https://www.donationalerts.com/r/cpstest" target="_blank">
+      💙 Support the project
+    </a>
 
-<a id="premiumBtn" href="https://www.donationalerts.com/r/cpstest" target="_blank">
-  ⭐ Get Premium (VIP)
-</a>
+    <a id="premiumBtn" href="https://www.donationalerts.com/r/cpstest" target="_blank">
+      ⭐ Get Premium (VIP)
+    </a>
+  </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  let isPremium = localStorage.getItem("premium") === "true";
+
+  /* ---------- PREMIUM ---------- */
+  const isPremium = localStorage.getItem("premium") === "true";
   if (isPremium) {
     document.body.style.border = "4px solid gold";
   }
@@ -90,12 +121,14 @@ document.addEventListener("DOMContentLoaded", () => {
     location.reload();
   };
 
+  /* ---------- CPS LOGIC ---------- */
   let clicks = 0;
   let timeLeft = 0;
   let interval = null;
   let active = false;
 
-  let best = Number(localStorage.getItem("bestCPS")) || 0;
+  let best = localStorage.getItem("bestCPS");
+  if (!best) best = 0;
 
   const recordEl = document.getElementById("record");
   recordEl.innerText = "Best: " + best + " CPS";
@@ -104,8 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
     clicks = 0;
     timeLeft = seconds;
     active = true;
-    document.getElementById("info").innerText = `Time: ${timeLeft}s`;
+
     document.getElementById("clickArea").classList.remove("disabled");
+    document.getElementById("info").innerText = `Time: ${timeLeft}s`;
 
     clearInterval(interval);
     interval = setInterval(() => {
@@ -123,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function endTest(seconds) {
     clearInterval(interval);
     active = false;
+
     document.getElementById("clickArea").classList.add("disabled");
 
     const cps = (clicks / seconds).toFixed(2);
@@ -136,13 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
       recordEl.style.color = "#22c55e";
     }
   }
-
 });
 </script>
 
 </body>
 </html>
-let isPremium = localStorage.getItem("premium") === "true";
-if (isPremium) {
-  document.body.style.border = "4px solid gold";
-}
