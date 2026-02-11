@@ -1,116 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>CPS Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f1220;
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
-
-    button {
-      padding: 12px 20px;
-      margin: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-    }
-
-    #userBox img {
-      margin-top: 10px;
-    }
-
-    .card {
-      background: #1b1f3b;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px auto;
-      max-width: 420px;
-    }
-  </style>
 </head>
-
 <body>
 
-  <h1>⚡ CPS Test</h1>
+<button id="login">Login with Google</button>
+<p id="user"></p>
 
-  <!-- AUTH -->
-  <div id="userBox" class="card"></div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } 
+  from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-  <!-- INFO -->
-  <div class="card">
-    <p id="info">Choose a mode to start</p>
-    <p id="record">Best: 0 CPS</p>
-  </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBPNTFX3JzT5Ln4i4YlyM-mn3HEcRA5nA8",
+    authDomain: "clicktest-pov.github.io",   // ВАЖНО
+    projectId: "cpstest-2e773",
+    appId: "1:26175565633:web:f0a7f176e4b3379c937bc0"          // если есть — вставь свой
+  };
 
-  <!-- DONATE -->
-  <div class="card">
-    <h3>Support project ❤️</h3>
-    <a href="https://www.donationalerts.com/r/cpstest" target="_blank">
-      <button>Donate</button>
-    </a>
-  </div>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-  <!-- FIREBASE + AUTH -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBPNTFX3JzT5Ln4i4YlyM-mn3HEcRA5nA8",
-      authDomain: "cpstest-2e773.firebaseapp.com",
-      projectId: "cpstest-2e773",
-      storageBucket: "cpstest-2e773.firebasestorage.app",
-      messagingSenderId: "26175565633",
-      appId: "1:26175565633:web:f0a7f176e4b3379c937bc0"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    window.loginGoogle = () => {
-      signInWithPopup(auth, provider)
-        .catch(err => alert(err.message));
-    };
-
-    window.logout = () => {
-      signOut(auth);
-    };
-
-    onAuthStateChanged(auth, user => {
-      const box = document.getElementById("userBox");
-
-      if (user) {
-        box.innerHTML = `
-          <h3>👤 Profile</h3>
-          <p>${user.displayName}</p>
-          <img src="${user.photoURL}" width="64" style="border-radius:50%">
-          <br><br>
-          <button onclick="logout()">Logout</button>
-        `;
-      } else {
-        box.innerHTML = `
-          <h3>Authorization</h3>
-          <button onclick="loginGoogle()">Login with Google</button>
-        `;
-      }
-    });
-  </script>
+  document.getElementById("login").addEventListener("click", () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        document.getElementById("user").innerText =
+          "Вы вошли как: " + result.user.displayName;
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Ошибка входа: " + error.message);
+      });
+  });
+</script>
 
 </body>
 </html>
